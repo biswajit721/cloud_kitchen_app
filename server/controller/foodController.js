@@ -97,12 +97,12 @@ exports.updateFood = async (req, res) => {
       images,
     } = req.body;
 
-    food.name = name || food.name;
-    food.price = price || food.price;
+    food.name        = name        || food.name;
+    food.price       = price       || food.price;
     food.description = description || food.description;
-    food.category = category || food.category;
-    food.thumbnail = thumbnail || food.thumbnail;
-    food.images = images || food.images;
+    food.category    = category    || food.category;
+    food.thumbnail   = thumbnail   || food.thumbnail;
+    food.images      = images      || food.images;
 
     await food.save();
 
@@ -134,6 +134,36 @@ exports.deleteFood = async (req, res) => {
     res.json({
       success: true,
       message: "Food deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// ✅ Toggle Trending
+// PATCH /food/:id/trending
+// Flips isTrending true → false or false → true and saves.
+exports.toggleTrending = async (req, res) => {
+  try {
+    const food = await Food.findById(req.params.id);
+
+    if (!food) {
+      return res.status(404).json({
+        success: false,
+        message: "Food not found",
+      });
+    }
+
+    food.isTrending = !food.isTrending;
+    await food.save();
+
+    res.json({
+      success: true,
+      message: `${food.name} is ${food.isTrending ? "now trending 🔥" : "removed from trending"}`,
+      data: food,
     });
   } catch (error) {
     res.status(500).json({

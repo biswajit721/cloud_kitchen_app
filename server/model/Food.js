@@ -35,6 +35,12 @@ const foodSchema = new mongoose.Schema(
       enum: ["Veg", "Non-Veg", "Dessert", "Drinks"],
       default: "Veg",
     },
+
+    // ✅ NEW — Admin toggles this to feature food in Trending strip
+    isTrending: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

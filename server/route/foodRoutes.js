@@ -17,4 +17,7 @@ router.put("/:id", foodController.updateFood);
 // Delete
 router.delete("/:id", foodController.deleteFood);
 
+// ✅ Toggle Trending — PATCH /food/:id/trending
+router.patch("/:id/trending", foodController.toggleTrending);
+
 module.exports = router;
