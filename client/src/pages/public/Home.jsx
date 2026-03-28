@@ -159,6 +159,11 @@ export default function Home() {
     );
   });
 
+  /* ── Show only first 8 on Home; Full Menu shows everything ── */
+  const PREVIEW_COUNT = 8;
+  const previewFoods  = filtered.slice(0, PREVIEW_COUNT);
+  const hasMore       = filtered.length > PREVIEW_COUNT;
+
   const handleAdd = (food, e) => {
     e?.stopPropagation();
     addToCart(food);
@@ -686,7 +691,9 @@ export default function Home() {
             <div>
               <h2 className="section-title" style={{ fontSize:"clamp(1.4rem,2.2vw,1.9rem)", fontWeight:900, color:C.textDark, margin:"0 0 5px" }}>
                 {activeCategory === "All" ? "All Menu Items" : activeCategory}
-                <span style={{ fontSize:14, fontWeight:500, color:C.textLight, marginLeft:8 }}>({filtered.length})</span>
+                <span style={{ fontSize:14, fontWeight:500, color:C.textLight, marginLeft:8 }}>
+                  ({hasMore ? `Showing ${PREVIEW_COUNT} of ${filtered.length}` : filtered.length})
+                </span>
               </h2>
               {searchQuery && (
                 <p style={{ fontSize:13, color:C.textMid, margin:0, fontFamily:"'Nunito', sans-serif" }}>
@@ -733,8 +740,9 @@ export default function Home() {
 
           {/* Cards */}
           {!loading && filtered.length > 0 && (
-            <div className="food-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:18 }}>
-              {filtered.map(food => (
+            <>
+              <div className="food-grid" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(220px,1fr))", gap:18 }}>
+                {previewFoods.map(food => (
                 <div key={food._id} className="food-card"
                   style={{
                     background:"#fff", borderRadius:20,
@@ -845,6 +853,29 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            {/* ── View All CTA — only shown when there are more items ── */}
+            {hasMore && (
+              <div style={{ textAlign:"center", marginTop:36 }}>
+                <p style={{ fontSize:13, color:C.textLight, fontFamily:"'Nunito',sans-serif", marginBottom:16 }}>
+                  Showing <strong style={{color:C.textDark}}>{PREVIEW_COUNT}</strong> of <strong style={{color:C.textDark}}>{filtered.length}</strong> items
+                </p>
+                <Link to="/foods" style={{
+                  display:"inline-flex", alignItems:"center", gap:8,
+                  background:C.orange, color:"#fff", textDecoration:"none",
+                  borderRadius:14, padding:"13px 32px",
+                  fontFamily:"'Sora',sans-serif", fontWeight:800, fontSize:14,
+                  boxShadow:"0 6px 20px rgba(255,122,0,0.30)",
+                  transition:"background 0.18s, transform 0.15s",
+                }}
+                  onMouseEnter={e=>{ e.currentTarget.style.background=C.orangeDark; e.currentTarget.style.transform="translateY(-2px)"; }}
+                  onMouseLeave={e=>{ e.currentTarget.style.background=C.orange; e.currentTarget.style.transform="translateY(0)"; }}
+                >
+                  View All {filtered.length} Items <ArrowRight size={15}/>
+                </Link>
+              </div>
+            )}
+            </>
           )}
         </section>
 

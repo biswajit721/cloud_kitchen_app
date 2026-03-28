@@ -4,22 +4,23 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
-    return savedCart ? JSON.parse(savedCart) : [];
+    try {
+      const saved = localStorage.getItem("cart");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
 
-  const clearCart = () => {
-    setCartItems([]);
-  };
-
+  /* Persist to localStorage on every change */
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
+  /* ── Add item (or increment if already exists) ── */
   const addToCart = (food) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item._id === food._id);
-
       if (existing) {
         return prev.map((item) =>
           item._id === food._id
@@ -27,15 +28,16 @@ export const CartProvider = ({ children }) => {
             : item
         );
       }
-
       return [...prev, { ...food, quantity: 1 }];
     });
   };
 
+  /* ── Remove item entirely ── */
   const removeFromCart = (id) => {
     setCartItems((prev) => prev.filter((item) => item._id !== id));
   };
 
+  /* ── Increase quantity by 1 ── */
   const increaseQty = (id) => {
     setCartItems((prev) =>
       prev.map((item) =>
@@ -44,20 +46,39 @@ export const CartProvider = ({ children }) => {
     );
   };
 
+  /* ── Decrease quantity by 1; remove item if it reaches 0 ── */
   const decreaseQty = (id) => {
     setCartItems((prev) =>
-      prev.map((item) =>
-        item._id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
+      prev
+        .map((item) =>
+          item._id === id ? { ...item, quantity: item.quantity - 1 } : item
+        )
+        .filter((item) => item.quantity > 0)
     );
   };
 
+  /* ── Set quantity to an exact value; remove if 0 or less ── */
+  const updateQuantity = (id, newQty) => {
+    if (newQty < 1) {
+      removeFromCart(id);
+    } else {
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item._id === id ? { ...item, quantity: newQty } : item
+        )
+      );
+    }
+  };
+
+  /* ── Clear the entire cart ── */
+  const clearCart = () => setCartItems([]);
+
+  /* ── Derived totals ── */
   const totalPrice = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <CartContext.Provider
@@ -67,8 +88,10 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         increaseQty,
         decreaseQty,
+        updateQuantity,   // used by Navbar & Checkout
+        clearCart,
         totalPrice,
-        clearCart
+        totalItems,
       }}
     >
       {children}
