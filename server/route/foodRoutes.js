@@ -1,23 +1,24 @@
 const express = require("express");
-const router = express.Router();
-const foodController = require("../controller/foodController");
+const router  = express.Router();
+const fc      = require("../controller/foodController");
 
-// Create
-router.post("/", foodController.createFood);
+// ── IMPORTANT: specific named routes MUST come before /:id routes ─────────────
+// Otherwise Express matches "migrate-veg" as an :id parameter → 404/500
 
-// Get All
-router.get("/", foodController.getAllFoods);
+// ── Migration (run ONCE) ──────────────────────────────────────────────────────
+// POST http://localhost:8000/api/food/migrate-veg
+router.post("/migrate-veg", fc.migrateVegFields);
 
-// Get Single
-router.get("/:id", foodController.getSingleFood);
+// ── CRUD ──────────────────────────────────────────────────────────────────────
+router.post("/",      fc.createFood);
+router.get("/",       fc.getAllFoods);
+router.get("/:id",    fc.getSingleFood);
+router.put("/:id",    fc.updateFood);
+router.delete("/:id", fc.deleteFood);
 
-// Update
-router.put("/:id", foodController.updateFood);
-
-// Delete
-router.delete("/:id", foodController.deleteFood);
-
-// ✅ Toggle Trending — PATCH /food/:id/trending
-router.patch("/:id/trending", foodController.toggleTrending);
+// ── Toggle routes ──────────────────────────────────────────────────────────────
+router.patch("/:id/trending", fc.toggleTrending);
+router.patch("/:id/veg",      fc.toggleVeg);
+router.patch("/:id/pureveg",  fc.togglePureVeg);
 
 module.exports = router;

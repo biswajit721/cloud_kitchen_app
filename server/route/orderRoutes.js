@@ -1,25 +1,37 @@
-const express = require("express");
-const {
-    createOrder,
-    getMyOrders,
-    getAllOrders,
-    updateOrderStatus,
-} = require("../controller/orderController");
-
+const express    = require("express");
+const router     = express.Router();
+const orderCtrl  = require("../controller/orderController");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
-const router = express.Router();
+/*
+  ⚠️  CRITICAL ROUTE ORDER:
+  /my-orders MUST come BEFORE /:id
+  Otherwise Express matches "my-orders" as an :id param and crashes.
+*/
 
-// Create Order
-router.post("/", protect, createOrder);
+/* Customer: place an order */
+router.post("/",             protect,            orderCtrl.createOrder);
 
-// Get My Orders
-router.get("/my-orders", protect, getMyOrders);
+/* Customer: view their own orders */
+router.get("/my-orders",     protect,            orderCtrl.getMyOrders);
 
-// Get All Orders (Admin)
-router.get("/", protect, adminOnly, getAllOrders);
+/* Admin: view ALL orders */
+router.get("/",              protect, adminOnly, orderCtrl.getAllOrders);
 
-// Update Order Status (Admin)
-router.put("/:id", protect, adminOnly, updateOrderStatus);
+/* Admin / Owner: view single order */
+router.get("/:id",           protect,            orderCtrl.getOrder);
+
+/*
+  Admin: update order status or payment status
+  Accepts body: { orderStatus: "confirmed" }  OR  { paymentStatus: "paid" }  OR both.
+
+  FIX: Previously used findByIdAndUpdate + runValidators:true which caused
+  Mongoose to validate ALL enum fields even when only ONE was sent.
+  Now uses findById → mutate → save() which is safe.
+*/
+router.put("/:id",           protect, adminOnly, orderCtrl.updateOrderStatus);
+
+/* Admin: delete order */
+router.delete("/:id",        protect, adminOnly, orderCtrl.deleteOrder);
 
 module.exports = router;
