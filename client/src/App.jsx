@@ -10,6 +10,7 @@ import Home from './pages/public/Home';
 import About from './pages/public/About';
 import Login from './pages/public/Login';
 import Register from './pages/public/Register';
+import ForgotPassword from './pages/public/Forgotpassword'; // ← ADD THIS // It may Change 
 import Profile from './pages/user/Profile';
 import AdminDashboard from './pages/admin/AdminDashboard';
 
@@ -53,6 +54,14 @@ function App() {
             </PublicRoute>
           } 
         />
+        <Route                             
+          path="forgot-password"           
+          element={                        
+            <PublicRoute>                  
+              <ForgotPassword />           
+            </PublicRoute>                 
+          }                                
+        />                                 
         
         {/* Only accessible if logged in */}
         <Route 
