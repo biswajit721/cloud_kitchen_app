@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { Mail, Lock, Eye, EyeOff, User, Phone, AlertCircle, CheckCircle, ArrowRight, Gift, Truck, Star } from "lucide-react";
+import snapbiteLogo from "../../assets/snapbite-logo.png";
 
 function pwScore(p) {
   let s = 0;
@@ -140,8 +141,8 @@ export default function Register() {
           <div className="rg-orb1"/> <div className="rg-orb2"/>
           <div style={{position:"relative",zIndex:1}}>
             <Link to="/" style={{display:"inline-flex",alignItems:"center",gap:9,textDecoration:"none"}}>
-              <div style={{width:38,height:38,background:"rgba(255,255,255,0.22)",border:"1.5px solid rgba(255,255,255,0.32)",borderRadius:11,display:"flex",alignItems:"center",justifyContent:"center",fontSize:19}}>🍔</div>
-              <span style={{fontSize:18,fontWeight:900,color:"#fff",letterSpacing:"-0.02em"}}>MyApp</span>
+              <img src={snapbiteLogo} alt="SnapBite" style={{ width: 38, height: 38, objectFit: "contain", borderRadius: 8 }} />
+              <span style={{fontSize:18,fontWeight:900,color:"#fff",letterSpacing:"-0.02em"}}>SnapBite</span>
             </Link>
           </div>
           <div style={{position:"relative",zIndex:1}}>
@@ -188,7 +189,9 @@ export default function Register() {
         <div className="rg-right">
           <div className="rg-card">
             <div style={{marginBottom:20}}>
-              <div style={{width:46,height:46,background:"linear-gradient(135deg,#FF7A00,#FF9A3C)",borderRadius:13,display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,marginBottom:12,boxShadow:"0 6px 18px rgba(255,122,0,.26)"}}>🍔</div>
+              <div style={{width:46,height:46,background:"linear-gradient(135deg,#FF7A00,#FF9A3C)",borderRadius:13,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:12,boxShadow:"0 6px 18px rgba(255,122,0,.26)",overflow:"hidden"}}>
+                <img src={snapbiteLogo} alt="SnapBite" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              </div>
               <h1 style={{fontSize:21,fontWeight:900,color:"#2C2C2C",marginBottom:3,letterSpacing:"-0.02em"}}>Create account ✨</h1>
               <p style={{fontSize:12.5,color:"#9CA3AF",fontFamily:"'Nunito',sans-serif"}}>Fill in your details to get started</p>
             </div>

@@ -6,7 +6,11 @@ const {
   loginUser,
   logoutUser,
   getMe,
-  // ── NEW ──
+  // ── Profile management ──
+  updateProfile,
+  updateAvatar,
+  changePassword,
+  // ── Forgot-password flow ──
   forgotPassword,
   verifyOtp,
   resetPassword,
@@ -14,21 +18,30 @@ const {
 
 const { protect } = require('../middleware/authMiddleware');
 
-// ── Original routes (unchanged) ────────────────────────────────────────────
+// ── Auth ──────────────────────────────────────────────────────────────────
 router.post('/register', registerUser);
 router.post('/login',    loginUser);
 router.post('/logout',   logoutUser);
 router.get('/me',        protect, getMe);
 
-// ── NEW: Forgot-password flow (3 steps) ────────────────────────────────────
-//
-//  Step 1 — User enters email or phone → OTP is generated and sent
+// ── Profile (Protected — must be logged in) ───────────────────────────────
+// Update name, phone, address
+router.put('/update-profile', protect, updateProfile);
+
+// Update profile photo (base64)
+router.put('/update-avatar',  protect, updateAvatar);
+
+// Change password (needs current password)
+router.put('/change-password', protect, changePassword);
+
+// ── Forgot-password flow (3 steps, no auth required) ─────────────────────
+// Step 1 — Enter email → OTP sent
 router.post('/forgot-password', forgotPassword);
 
-//  Step 2 — User enters the 6-digit OTP → verified, short-lived resetToken returned
+// Step 2 — Enter OTP → resetToken returned
 router.post('/verify-otp',      verifyOtp);
 
-//  Step 3 — User enters new password + the resetToken from step 2
+// Step 3 — Enter new password + resetToken
 router.post('/reset-password',  resetPassword);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ChevronRight } from "lucide-react";
+import snapbiteLogo from "../../assets/snapbite-logo.png";
 
 /* ─── Styles ─── */
 const AboutStyles = () => (
@@ -160,29 +161,29 @@ function useReveal() {
 
 /* ── Data ── */
 const team = [
-  { name:"Aryan Mehta",  role:"Co-Founder & CEO",       emoji:"👨‍💼", accent:"#FF7A00", accentLight:"#FFF3E8",
-    bio:"Former chef turned tech founder. Built MyApp after waiting 90 mins for cold biryani." },
-  { name:"Priya Sharma", role:"Co-Founder & CTO",       emoji:"👩‍💻", accent:"#2ECC71", accentLight:"#E8FAF0",
+  { name:"Aryan Mehta",  role:"Co-Founder & CEO",      emoji:"👨‍💼", accent:"#FF7A00", accentLight:"#FFF3E8",
+    bio:"Former chef turned tech founder. Built SnapBite after waiting 90 mins for cold biryani." },
+  { name:"Priya Sharma", role:"Co-Founder & CTO",      emoji:"👩‍💻", accent:"#2ECC71", accentLight:"#E8FAF0",
     bio:"Ex-Google engineer. Built the routing algo that cut delivery time by 40%." },
-  { name:"Kabir Nair",   role:"Head of Operations",     emoji:"🧑‍💼", accent:"#FFC300", accentLight:"#FFF8E1",
+  { name:"Kabir Nair",   role:"Head of Operations",    emoji:"🧑‍💼", accent:"#FFC300", accentLight:"#FFF8E1",
     bio:"Logistics expert managing 10,000+ delivery partners across the country." },
-  { name:"Zara Khan",    role:"Head of Design",         emoji:"👩‍🎨", accent:"#9B59B6", accentLight:"#F5EEFF",
+  { name:"Zara Khan",    role:"Head of Design",        emoji:"👩‍🎨", accent:"#9B59B6", accentLight:"#F5EEFF",
     bio:"Passionate about every pixel. Redesigned the app that tripled user retention." },
 ];
 
 const milestones = [
-  { year:"2019", title:"Founded",     desc:"Launched in Bangalore with 8 restaurants and 3 delivery partners.", icon:"🌱", color:"#2ECC71" },
-  { year:"2020", title:"Grew 400%",   desc:"Supported local restaurants through the pandemic. Demand surged 4×.", icon:"📈", color:"#FF7A00" },
-  { year:"2022", title:"1M Orders",   desc:"Hit our first million orders milestone — celebrated with free food for a day!", icon:"🎯", color:"#FFC300" },
+  { year:"2019", title:"Founded",    desc:"Launched in Bangalore with 8 restaurants and 3 delivery partners.", icon:"🌱", color:"#2ECC71" },
+  { year:"2020", title:"Grew 400%",  desc:"Supported local restaurants through the pandemic. Demand surged 4×.", icon:"📈", color:"#FF7A00" },
+  { year:"2022", title:"1M Orders",  desc:"Hit our first million orders milestone — celebrated with free food for a day!", icon:"🎯", color:"#FFC300" },
   { year:"2024", title:"500+ Cities", desc:"Expanded pan-India with 50,000+ restaurants and 10,000+ delivery partners.", icon:"🗺️", color:"#FF7A00" },
   { year:"2026", title:"What's Next", desc:"AI-powered delivery, drone pilots launching, and global expansion begins.", icon:"🚀", color:"#2ECC71" },
 ];
 
 const values = [
-  { icon:"⚡", title:"Speed First",       desc:"Every second matters when you're hungry. We obsess over delivery time.", bg:"#FFF3E8", border:"#FFD4A8", iconColor:"#FF7A00" },
+  { icon:"⚡", title:"Speed First",      desc:"Every second matters when you're hungry. We obsess over delivery time.", bg:"#FFF3E8", border:"#FFD4A8", iconColor:"#FF7A00" },
   { icon:"❤️", title:"Quality Always",    desc:"We partner only with restaurants that cook with passion and heart.", bg:"#FFF0F5", border:"#FFB3CC", iconColor:"#E91E8C" },
-  { icon:"🌱", title:"Sustainable",       desc:"Eco-friendly packaging and a carbon-neutral delivery fleet by 2027.", bg:"#E8FAF0", border:"#A8E6C2", iconColor:"#2ECC71" },
-  { icon:"🤝", title:"Community",         desc:"Empowering local restaurants and delivery heroes with fair earnings.", bg:"#FFF8E1", border:"#FFE57A", iconColor:"#FFC300" },
+  { icon:"🌱", title:"Sustainable",      desc:"Eco-friendly packaging and a carbon-neutral delivery fleet by 2027.", bg:"#E8FAF0", border:"#A8E6C2", iconColor:"#2ECC71" },
+  { icon:"🤝", title:"Community",        desc:"Empowering local restaurants and delivery heroes with fair earnings.", bg:"#FFF8E1", border:"#FFE57A", iconColor:"#FFC300" },
   { icon:"🔒", title:"Trust & Safety",    desc:"Every order tracked. Every partner verified. Your safety is non-negotiable.", bg:"#EFF6FF", border:"#BFDBFE", iconColor:"#2563EB" },
   { icon:"🚀", title:"Always Innovating", desc:"Drone deliveries, AI recs — we stay two steps ahead of the curve.", bg:"#F5EEFF", border:"#D8B4FE", iconColor:"#9B59B6" },
 ];
@@ -429,7 +430,7 @@ export default function About() {
               {[
                 "In 2019, our founder Aryan ordered biryani at 7 PM. It arrived at 9:30 PM — cold, soggy, and wrong. That night, instead of complaining, he started building.",
                 "He called his college friend Priya, a software engineer at Google, and said: \"Food delivery in India is broken. Let's fix it.\"",
-                "Six months later, MyApp launched in Bangalore with 8 restaurants, 3 delivery partners, and one stubborn vision — food should arrive hot, fast, and exactly as ordered.",
+                "Six months later, SnapBite launched in Bangalore with 8 restaurants, 3 delivery partners, and one stubborn vision — food should arrive hot, fast, and exactly as ordered.",
               ].map((para, i) => (
                 <p key={i} style={{ color:"var(--text-mid)", fontSize:15, lineHeight:1.85, marginBottom:16, fontFamily:"'Nunito',sans-serif", fontWeight:500 }}>
                   {para}
@@ -759,8 +760,8 @@ export default function About() {
           <div className="footer-grid" style={{ display:"grid", gridTemplateColumns:"1.6fr 1fr 1fr 1fr", gap:36, marginBottom:48 }}>
             <div>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-                <div style={{ width:36, height:36, background:"var(--orange)", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>🍔</div>
-                <span style={{ fontSize:22, fontWeight:900, color:"var(--orange)", fontFamily:"'Sora',sans-serif" }}>MyApp</span>
+                <img src={snapbiteLogo} alt="SnapBite" style={{ width: 40, height: 40, objectFit: "contain", borderRadius: 8 }} />
+                <span style={{ fontSize:22, fontWeight:900, color:"var(--orange)", fontFamily:"'Sora',sans-serif" }}>SnapBite</span>
               </div>
               <p style={{ color:"#475569", fontSize:14, lineHeight:1.8, maxWidth:240, fontFamily:"'Nunito',sans-serif" }}>
                 Delivering happiness to your doorstep, one fresh meal at a time. 🧡
@@ -802,7 +803,7 @@ export default function About() {
             ))}
           </div>
           <div style={{ borderTop:"1px solid #1E293B", paddingTop:24, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
-            <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>© 2026 MyApp. All rights reserved.</p>
+            <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>© 2026 SnapBite. All rights reserved.</p>
             <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>Made with 🧡 for food lovers</p>
           </div>
         </footer>

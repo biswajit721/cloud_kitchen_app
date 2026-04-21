@@ -8,6 +8,7 @@ import {
   ChevronRight, Tag, Plus, Minus, Trash2,
   Download, FileText,
 } from "lucide-react";
+import snapbiteLogo from "../../assets/snapbite-logo.png";
 
 /* ═══════════════════════════════════════════════════════════════════════════
    COUPON CODES — correct discounts
@@ -57,7 +58,7 @@ function generateInvoice(snap) {
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>${invoiceNo} — MyApp</title>
+<title>${invoiceNo} — SnapBite</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&display=swap');
   *{box-sizing:border-box;margin:0;padding:0}
@@ -65,7 +66,8 @@ function generateInvoice(snap) {
   .page{width:794px;min-height:1123px;margin:0 auto;padding:52px 56px}
   .hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:28px;border-bottom:2px solid #F0ECE6;margin-bottom:28px}
   .brand{display:flex;align-items:center;gap:14px}
-  .brand-icon{width:52px;height:52px;background:#FF7A00;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
+  .brand-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .brand-icon img {width:100%;height:100%;object-fit:contain;}
   .brand-name{font-size:28px;font-weight:900;color:#FF7A00}
   .brand-sub{font-size:12px;color:#9CA3AF;margin-top:2px}
   .inv-meta{text-align:right}
@@ -108,8 +110,8 @@ function generateInvoice(snap) {
 <div class="page">
   <div class="hdr">
     <div class="brand">
-      <div class="brand-icon">🍔</div>
-      <div><div class="brand-name">MyApp</div><div class="brand-sub">Fresh Food Delivery Platform</div></div>
+      <div class="brand-icon"><img src="${snapbiteLogo}" alt="SnapBite"/></div>
+      <div><div class="brand-name">SnapBite</div><div class="brand-sub">Fresh Food Delivery Platform</div></div>
     </div>
     <div class="inv-meta">
       <div class="inv-title">INVOICE</div>
@@ -161,7 +163,7 @@ function generateInvoice(snap) {
     <div class="ty-icon">🍽️</div>
   </div>
   <div class="foot">
-    <div class="foot-l">MyApp · Fresh Food Delivery · support@myapp.com</div>
+    <div class="foot-l">SnapBite · Fresh Food Delivery · support@snapbite.com</div>
     <div class="foot-r">${invoiceNo} · ${orderDate}</div>
   </div>
 </div>

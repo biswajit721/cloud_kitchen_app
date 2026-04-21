@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   ShoppingCart, X, Trash2, Plus, Minus, Menu,
-  Home, Info, Phone, UtensilsCrossed, ClipboardList, Settings
+  Home, Info, Phone, UtensilsCrossed, ClipboardList,
+  Settings, User, ChevronDown
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
+
+// ── Drop your logo file at: src/assets/snapbite-logo.png ──────────────────
+import snapbiteLogo from "../assets/snapbite-logo.png";
 
 const NavStyles = () => (
   <style>{`
@@ -13,7 +17,7 @@ const NavStyles = () => (
 
     :root {
       --orange: #FF7A00; --orange-dark: #E06A00; --orange-light: #FFF3E8;
-      --green: #2ECC71; --green-light: #E8FAF0;
+      --green: #2ECC71;  --green-light: #E8FAF0;
       --yellow-light: #FFF8E1; --cream: #FFF9F2; --navy: #1A1A2E;
       --text: #2C2C2C; --text-mid: #5C5C6E; --text-light: #9CA3AF;
       --border: #F0ECE6; --white: #FFFFFF;
@@ -105,11 +109,15 @@ const NavStyles = () => (
     }
     .nb-btn-logout:hover { background: #EF4444; color: #fff; border-color: #EF4444; }
 
-    .nb-user-chip {
-      display: flex; align-items: center; gap: 8px;
-      background: var(--green-light); border: 1.5px solid rgba(46,204,113,0.3);
-      border-radius: 99px; padding: 5px 14px 5px 5px;
+    /* ── User dropdown ── */
+    .nb-user-btn {
+      display: flex; align-items: center; gap: 7px;
+      background: var(--green-light); border: 1.5px solid rgba(46,204,113,0.30);
+      border-radius: 99px; padding: 5px 12px 5px 5px;
+      cursor: pointer; position: relative;
+      transition: all 0.18s ease;
     }
+    .nb-user-btn:hover { background: #d4f5e4; border-color: var(--green); }
     .nb-user-avatar {
       width: 26px; height: 26px; background: var(--green);
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -117,8 +125,27 @@ const NavStyles = () => (
     }
     .nb-user-name {
       font-size: 12px; font-weight: 700; color: var(--text);
-      max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
+    .nb-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: 16px; padding: 8px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.12);
+      min-width: 180px; z-index: 999;
+      animation: dropdown-in 0.18s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes dropdown-in { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+    .nb-dd-item {
+      display: flex; align-items: center; gap: 9px;
+      padding: 10px 12px; border-radius: 10px; text-decoration: none;
+      font-size: 13px; font-weight: 600; color: var(--text-mid);
+      transition: all 0.15s; cursor: pointer; border: none; background: none;
+      width: 100%; font-family: 'Sora', sans-serif;
+    }
+    .nb-dd-item:hover { background: var(--orange-light); color: var(--orange); }
+    .nb-dd-item.danger:hover { background: #FEF2F2; color: #EF4444; }
+    .nb-dd-divider { height: 1px; background: var(--border); margin: 6px 0; }
 
     @keyframes fadeIn  { from{opacity:0} to{opacity:1} }
     @keyframes slideInLeft  { from{transform:translateX(-100%)} to{transform:translateX(0)} }
@@ -160,14 +187,12 @@ const NavStyles = () => (
     }
     .cart-item-row:last-child { border-bottom: none; }
 
-    /* ── qty buttons ── */
     .qty-btn {
       width: 28px; height: 28px;
       background: var(--cream); border: 1.5px solid var(--border);
       border-radius: 8px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: all 0.15s ease; flex-shrink: 0;
-      /* CRITICAL: always button type to prevent form submit */
     }
     .qty-btn:hover         { background: var(--orange-light); border-color: var(--orange); }
     .qty-btn.minus:hover   { background: #FEF2F2; border-color: #FECACA; }
@@ -190,7 +215,7 @@ const NavStyles = () => (
       box-shadow: 0 6px 22px rgba(255,122,0,0.32);
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .checkout-btn:hover { background: var(--orange-dark); transform: translateY(-1px); box-shadow: 0 10px 28px rgba(255,122,0,0.40); }
+    .checkout-btn:hover { background: var(--orange-dark); transform: translateY(-1px); }
 
     .clear-btn {
       background: none; border: 1.5px solid var(--border);
@@ -213,7 +238,6 @@ const NavStyles = () => (
 
 export default function Navbar() {
   const { user, logout } = useAuth();
-  /* ── Use your CartContext's exact function names ── */
   const { cartItems, removeFromCart, increaseQty, decreaseQty, clearCart, totalPrice } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
@@ -221,6 +245,7 @@ export default function Navbar() {
   const [isCartOpen,   setIsCartOpen]   = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [scrolled,     setScrolled]     = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 12);
@@ -228,10 +253,20 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", fn);
   }, []);
 
-  useEffect(() => { setIsMobileOpen(false); }, [location.pathname]);
+  useEffect(() => { setIsMobileOpen(false); setUserMenuOpen(false); }, [location.pathname]);
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const close = e => {
+      if (!e.target.closest(".nb-user-btn") && !e.target.closest(".nb-dropdown"))
+        setUserMenuOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
+  }, [userMenuOpen]);
 
   const totalItems = cartItems.reduce((a, i) => a + i.quantity, 0);
-
   const isActive = (path) =>
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
@@ -246,19 +281,9 @@ export default function Navbar() {
     { to: "/contact", label: "Contact", Icon: Phone           },
   ];
 
-  /* ── Safe qty handlers — e.preventDefault + e.stopPropagation always ── */
-  const onInc = (e, id) => {
-    e.preventDefault(); e.stopPropagation();
-    increaseQty(id);
-  };
-  const onDec = (e, id) => {
-    e.preventDefault(); e.stopPropagation();
-    decreaseQty(id);
-  };
-  const onRemove = (e, id) => {
-    e.preventDefault(); e.stopPropagation();
-    removeFromCart(id);
-  };
+  const onInc    = (e, id) => { e.preventDefault(); e.stopPropagation(); increaseQty(id); };
+  const onDec    = (e, id) => { e.preventDefault(); e.stopPropagation(); decreaseQty(id); };
+  const onRemove = (e, id) => { e.preventDefault(); e.stopPropagation(); removeFromCart(id); };
 
   return (
     <>
@@ -268,26 +293,35 @@ export default function Navbar() {
       <nav className={`nb-root ${scrolled ? "scrolled" : "top"}`}>
         <div style={{ maxWidth:1320, margin:"0 auto", padding:"0 20px", height:64, display:"flex", alignItems:"center", justifyContent:"space-between", gap:16 }}>
 
-          {/* Logo */}
-          <Link to="/" style={{ display:"flex", alignItems:"center", gap:8, textDecoration:"none", flexShrink:0 }}>
-            <div style={{ width:34, height:34, background:"linear-gradient(135deg,#FF7A00,#FF9A3C)", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 4px 12px rgba(255,122,0,0.30)", fontSize:18 }}>🍔</div>
-            <span style={{ fontFamily:"'Sora',sans-serif", fontSize:18, fontWeight:900, background:"linear-gradient(135deg,#FF7A00,#E06A00)", backgroundClip:"text", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
-              MyApp
+          {/* ── Logo ── */}
+          <Link to="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none", flexShrink:0 }}>
+            <img
+              src={snapbiteLogo}
+              alt="SnapBite"
+              style={{ height:40, width:"auto", objectFit:"contain" }}
+            />
+            <span style={{
+              fontFamily:"'Sora',sans-serif", fontSize:20, fontWeight:900,
+              background:"linear-gradient(135deg,#FF7A00,#2ECC71)",
+              backgroundClip:"text", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
+              letterSpacing:"-0.02em",
+            }}>
+              SnapBite
             </span>
           </Link>
 
-          {/* Desktop links */}
+          {/* ── Desktop nav links ── */}
           <div className="nb-desktop-links" style={{ display:"flex", alignItems:"center", gap:28, flex:1, justifyContent:"center" }}>
             {navLinks.map(({ to, label }) => (
               <Link key={to} to={to} className={`nb-link${isActive(to) ? " active" : ""}`}>{label}</Link>
             ))}
           </div>
 
-          {/* Right actions */}
+          {/* ── Right actions ── */}
           <div style={{ display:"flex", alignItems:"center", gap:10, flexShrink:0 }}>
 
-            {/* Cart icon */}
-            <button type="button" className="nb-cart-btn" onClick={() => setIsCartOpen(true)} title="Open cart">
+            {/* Cart */}
+            <button type="button" className="nb-cart-btn" onClick={() => setIsCartOpen(true)}>
               <ShoppingCart size={20} color={totalItems > 0 ? "var(--orange)" : "var(--text-mid)"}/>
               {totalItems > 0 && (
                 <span className="nb-cart-badge">{totalItems > 99 ? "99+" : totalItems}</span>
@@ -298,23 +332,46 @@ export default function Navbar() {
             <div className="nb-desktop-links" style={{ display:"flex", alignItems:"center", gap:10 }}>
               {user ? (
                 <>
-                  <div className="nb-user-chip">
-                    <div className="nb-user-avatar">{initials}</div>
-                    <span className="nb-user-name">{user.name}</span>
+                  {/* User dropdown */}
+                  <div style={{ position:"relative" }}>
+                    <div className="nb-user-btn" onClick={() => setUserMenuOpen(o => !o)}>
+                      <div className="nb-user-avatar">{initials}</div>
+                      <span className="nb-user-name">{user.name.split(" ")[0]}</span>
+                      <ChevronDown size={12} color="var(--text-mid)" style={{ transition:"transform .2s", transform:userMenuOpen?"rotate(180deg)":"rotate(0deg)" }}/>
+                    </div>
+
+                    {userMenuOpen && (
+                      <div className="nb-dropdown">
+                        {/* User info */}
+                        <div style={{ padding:"10px 12px 8px", borderBottom:"1px solid var(--border)", marginBottom:6 }}>
+                          <div style={{ fontSize:13, fontWeight:800, color:"var(--text)" }}>{user.name}</div>
+                          <div style={{ fontSize:11, color:"var(--text-light)", fontFamily:"'Nunito',sans-serif" }}>{user.email}</div>
+                        </div>
+
+                        <Link to="/profile" className="nb-dd-item">
+                          <User size={14}/> My Profile
+                        </Link>
+
+                        {user.role !== "admin" && (
+                          <Link to="/my-orders" className="nb-dd-item">
+                            <ClipboardList size={14}/> My Orders
+                          </Link>
+                        )}
+
+                        {user.role === "admin" && (
+                          <Link to="/admin" className="nb-dd-item">
+                            <Settings size={14}/> Admin Panel
+                          </Link>
+                        )}
+
+                        <div className="nb-dd-divider"/>
+
+                        <button type="button" className="nb-dd-item danger" onClick={() => { logout(); setUserMenuOpen(false); }}>
+                          <span style={{ fontSize:14 }}>🚪</span> Sign Out
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  {user.role !== "admin" && (
-                    <Link to="/my-orders" className="nb-btn-ghost"
-                      style={isActive("/my-orders") ? { borderColor:"var(--orange)", color:"var(--orange)", background:"var(--orange-light)" } : {}}>
-                      <ClipboardList size={13}/> Orders
-                    </Link>
-                  )}
-                  {user.role === "admin" && (
-                    <Link to="/admin" className="nb-btn-ghost"
-                      style={isActive("/admin") ? { borderColor:"var(--orange)", color:"var(--orange)", background:"var(--orange-light)" } : {}}>
-                      <Settings size={13}/> Admin
-                    </Link>
-                  )}
-                  <button type="button" className="nb-btn-logout" onClick={logout}>Logout</button>
                 </>
               ) : (
                 <>
@@ -339,8 +396,8 @@ export default function Navbar() {
           <div className="nb-mobile-drawer">
             <div style={{ padding:"18px 20px 14px", borderBottom:"1px solid var(--border)", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                <div style={{ width:32, height:32, background:"linear-gradient(135deg,#FF7A00,#FF9A3C)", borderRadius:9, display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>🍔</div>
-                <span style={{ fontFamily:"'Sora',sans-serif", fontSize:17, fontWeight:900, background:"linear-gradient(135deg,#FF7A00,#E06A00)", backgroundClip:"text", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>MyApp</span>
+                <img src={snapbiteLogo} alt="SnapBite" style={{ height:32, width:"auto" }}/>
+                <span style={{ fontFamily:"'Sora',sans-serif", fontSize:17, fontWeight:900, background:"linear-gradient(135deg,#FF7A00,#2ECC71)", backgroundClip:"text", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>SnapBite</span>
               </div>
               <button type="button" onClick={() => setIsMobileOpen(false)} style={{ background:"none", border:"none", cursor:"pointer", padding:6, borderRadius:8, display:"flex" }}>
                 <X size={18} color="var(--text-mid)"/>
@@ -364,6 +421,11 @@ export default function Navbar() {
                   <Icon size={16}/>{label}
                 </Link>
               ))}
+              {user && (
+                <Link to="/profile" className={`nb-drawer-link${isActive("/profile") ? " active" : ""}`}>
+                  <User size={16}/> My Profile
+                </Link>
+              )}
               {user?.role !== "admin" && (
                 <Link to="/my-orders" className={`nb-drawer-link${isActive("/my-orders") ? " active" : ""}`}>
                   <ClipboardList size={16}/> My Orders
@@ -381,10 +443,9 @@ export default function Navbar() {
             <div style={{ padding:"8px 10px 20px", display:"flex", flexDirection:"column", gap:8 }}>
               {user ? (
                 <button type="button" onClick={() => { logout(); setIsMobileOpen(false); }}
-                  style={{ width:"100%", padding:"12px", background:"#FEF2F2", border:"1.5px solid #FECACA", color:"#EF4444", borderRadius:12, fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:700, cursor:"pointer" }}
-                  onMouseEnter={e=>{ e.currentTarget.style.background="#EF4444"; e.currentTarget.style.color="#fff"; }}
-                  onMouseLeave={e=>{ e.currentTarget.style.background="#FEF2F2"; e.currentTarget.style.color="#EF4444"; }}
-                >Sign Out</button>
+                  style={{ width:"100%", padding:"12px", background:"#FEF2F2", border:"1.5px solid #FECACA", color:"#EF4444", borderRadius:12, fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:700, cursor:"pointer" }}>
+                  Sign Out
+                </button>
               ) : (
                 <>
                   <Link to="/login" style={{ display:"block", textAlign:"center", padding:"12px", background:"var(--cream)", border:"1.5px solid var(--border)", color:"var(--text-mid)", borderRadius:12, fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:700, textDecoration:"none" }}>Login</Link>
@@ -401,8 +462,6 @@ export default function Navbar() {
         <>
           <div className="nb-cart-overlay" onClick={() => setIsCartOpen(false)}/>
           <div className="nb-cart-sidebar">
-
-            {/* Header */}
             <div style={{ padding:"18px 20px", borderBottom:"1px solid var(--border)", display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
               <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                 <div style={{ width:36, height:36, background:"var(--orange-light)", borderRadius:11, display:"flex", alignItems:"center", justifyContent:"center" }}>
@@ -418,16 +477,12 @@ export default function Navbar() {
                   <button type="button" className="clear-btn" onClick={clearCart}>Clear all</button>
                 )}
                 <button type="button" onClick={() => setIsCartOpen(false)}
-                  style={{ background:"none", border:"none", cursor:"pointer", padding:6, borderRadius:8, display:"flex", color:"var(--text-light)" }}
-                  onMouseEnter={e=>e.currentTarget.style.background="var(--cream)"}
-                  onMouseLeave={e=>e.currentTarget.style.background="none"}
-                >
+                  style={{ background:"none", border:"none", cursor:"pointer", padding:6, borderRadius:8, display:"flex", color:"var(--text-light)" }}>
                   <X size={18}/>
                 </button>
               </div>
             </div>
 
-            {/* Items */}
             <div style={{ flex:1, overflowY:"auto", padding:"0 20px" }}>
               {cartItems.length === 0 ? (
                 <div style={{ textAlign:"center", padding:"60px 20px" }}>
@@ -435,75 +490,38 @@ export default function Navbar() {
                   <h3 style={{ fontFamily:"'Sora',sans-serif", fontSize:17, fontWeight:800, color:"var(--text)", marginBottom:8 }}>Your cart is empty</h3>
                   <p style={{ fontFamily:"'Nunito',sans-serif", fontSize:14, color:"var(--text-light)", marginBottom:24 }}>Add some delicious food to get started!</p>
                   <button type="button" onClick={() => { setIsCartOpen(false); navigate("/foods"); }}
-                    style={{ background:"var(--orange)", color:"#fff", border:"none", borderRadius:12, padding:"11px 28px", fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:800, cursor:"pointer", boxShadow:"0 4px 16px rgba(255,122,0,0.28)" }}
-                  >
+                    style={{ background:"var(--orange)", color:"#fff", border:"none", borderRadius:12, padding:"11px 28px", fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:800, cursor:"pointer", boxShadow:"0 4px 16px rgba(255,122,0,0.28)" }}>
                     Browse Menu →
                   </button>
                 </div>
               ) : (
                 cartItems.map(item => (
                   <div key={item._id} className="cart-item-row">
-                    {/* Thumbnail */}
-                    <img src={item.thumbnail} alt={item.name}
-                      style={{ width:60, height:60, borderRadius:12, objectFit:"cover", flexShrink:0 }}
-                    />
-                    {/* Info */}
+                    <img src={item.thumbnail} alt={item.name} style={{ width:60, height:60, borderRadius:12, objectFit:"cover", flexShrink:0 }}/>
                     <div style={{ flex:1, minWidth:0 }}>
-                      <h4 style={{ fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:700, color:"var(--text)", margin:"0 0 3px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
-                        {item.name}
-                      </h4>
-                      <p style={{ fontFamily:"'Nunito',sans-serif", fontSize:12, color:"var(--text-light)", margin:"0 0 8px" }}>
-                        ₹{item.price} each
-                      </p>
-                      {/* ── QTY CONTROLS — type="button" is CRITICAL ── */}
+                      <h4 style={{ fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:700, color:"var(--text)", margin:"0 0 3px", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{item.name}</h4>
+                      <p style={{ fontFamily:"'Nunito',sans-serif", fontSize:12, color:"var(--text-light)", margin:"0 0 8px" }}>₹{item.price} each</p>
                       <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                        <button
-                          type="button"
-                          className="qty-btn minus"
-                          onClick={e => onDec(e, item._id)}
-                          aria-label="Decrease quantity"
-                        >
-                          <Minus size={11} color="var(--text-mid)"/>
-                        </button>
-                        <span style={{ fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:800, color:"var(--text)", minWidth:22, textAlign:"center", userSelect:"none" }}>
-                          {item.quantity}
-                        </span>
-                        <button
-                          type="button"
-                          className="qty-btn"
-                          onClick={e => onInc(e, item._id)}
-                          aria-label="Increase quantity"
-                        >
-                          <Plus size={11} color="var(--orange)"/>
-                        </button>
+                        <button type="button" className="qty-btn minus" onClick={e => onDec(e, item._id)}><Minus size={11} color="var(--text-mid)"/></button>
+                        <span style={{ fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:800, color:"var(--text)", minWidth:22, textAlign:"center" }}>{item.quantity}</span>
+                        <button type="button" className="qty-btn" onClick={e => onInc(e, item._id)}><Plus size={11} color="var(--orange)"/></button>
                       </div>
                     </div>
-                    {/* Subtotal + remove */}
                     <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:8, flexShrink:0 }}>
-                      <span style={{ fontFamily:"'Sora',sans-serif", fontSize:14, fontWeight:900, color:"var(--orange)" }}>
-                        ₹{item.price * item.quantity}
-                      </span>
-                      <button
-                        type="button"
-                        className="remove-btn"
-                        onClick={e => onRemove(e, item._id)}
-                        aria-label="Remove item"
-                      >
-                        <Trash2 size={15}/>
-                      </button>
+                      <span style={{ fontFamily:"'Sora',sans-serif", fontSize:14, fontWeight:900, color:"var(--orange)" }}>₹{item.price * item.quantity}</span>
+                      <button type="button" className="remove-btn" onClick={e => onRemove(e, item._id)}><Trash2 size={15}/></button>
                     </div>
                   </div>
                 ))
               )}
             </div>
 
-            {/* Footer */}
             {cartItems.length > 0 && (
               <div style={{ padding:"16px 20px 24px", borderTop:"1px solid var(--border)", background:"#fff", flexShrink:0 }}>
                 <div style={{ background:"var(--cream)", borderRadius:14, padding:"14px 16px", marginBottom:12 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
                     <span style={{ fontFamily:"'Nunito',sans-serif", fontSize:13, color:"var(--text-mid)" }}>Subtotal</span>
-                    <span style={{ fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:700, color:"var(--text)" }}>₹{totalPrice}</span>
+                    <span style={{ fontFamily:"'Sora',sans-serif", fontSize:13, fontWeight:700 }}>₹{totalPrice}</span>
                   </div>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:8 }}>
                     <span style={{ fontFamily:"'Nunito',sans-serif", fontSize:13, color:"var(--text-mid)" }}>Delivery fee</span>
@@ -511,7 +529,7 @@ export default function Navbar() {
                   </div>
                   <div style={{ height:1, background:"var(--border)", margin:"10px 0" }}/>
                   <div style={{ display:"flex", justifyContent:"space-between" }}>
-                    <span style={{ fontFamily:"'Sora',sans-serif", fontSize:15, fontWeight:800, color:"var(--text)" }}>Total</span>
+                    <span style={{ fontFamily:"'Sora',sans-serif", fontSize:15, fontWeight:800 }}>Total</span>
                     <span style={{ fontFamily:"'Sora',sans-serif", fontSize:17, fontWeight:900, color:"var(--orange)" }}>₹{totalPrice}</span>
                   </div>
                 </div>

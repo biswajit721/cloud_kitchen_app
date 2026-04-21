@@ -8,6 +8,7 @@ import {
 import api from "../../services/api";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
+import snapbiteLogo from "../../assets/snapbite-logo.png";
 
 /* ─────────────────────────────────────────────────────────────────────────────
    VEG HELPER FUNCTIONS
@@ -229,7 +230,7 @@ export default function Home() {
               <h1 className="hero-h1" style={{ fontSize:"clamp(2.8rem,5vw,5rem)", fontWeight:900, lineHeight:1.06, letterSpacing:"-.03em", color:"#fff", marginBottom:20 }}>
                 Crave it.<br/>
                 <span style={{ background:"linear-gradient(90deg,#fff 0%,rgba(255,255,255,.75) 100%)", backgroundClip:"text", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>Order it.</span><br/>
-                Love it. 🍔
+                Love it.
               </h1>
 
               <p style={{ color:"rgba(255,255,255,.85)", fontSize:"clamp(.95rem,1.3vw,1.1rem)", lineHeight:1.8, maxWidth:440, marginBottom:36, fontFamily:"'Nunito',sans-serif", fontWeight:500 }}>
@@ -343,7 +344,7 @@ export default function Home() {
               "🎉 50% Off First Order — FIRST50",
               "🛵 Free Delivery This Week",
               "⚡ Under 30 Minutes Guaranteed",
-              "🍔 500+ Restaurants Now Live",
+              "🍽️ 500+ Restaurants Now Live",
               "⭐ Rated 4.9 by 2 Million Users",
               "🌱 Pure Veg & Jain Options Available",
             ]).map((t,i) => (
@@ -364,8 +365,8 @@ export default function Home() {
           <div className="offer-grid" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:18 }}>
             {[
               { code:"FIRST50",   desc:"50% off your very first order",  sub:"New users only · Max ₹150", emoji:"🎊", bg:"linear-gradient(135deg,#FF7A00,#FF9A3C)", tc:"#fff" },
-              { code:"FREEDEL",   desc:"Free delivery on all orders",     sub:"No minimum cart value",      emoji:"🛵", bg:"linear-gradient(135deg,#FFC300,#FFD740)", tc:C.textDark },
-              { code:"WEEKEND30", desc:"30% off every Sat & Sun",         sub:"Use before midnight Sunday", emoji:"🎉", bg:"linear-gradient(135deg,#2ECC71,#27AE60)", tc:"#fff" },
+              { code:"FREEDEL",   desc:"Free delivery on all orders",    sub:"No minimum cart value",      emoji:"🛵", bg:"linear-gradient(135deg,#FFC300,#FFD740)", tc:C.textDark },
+              { code:"WEEKEND30", desc:"30% off every Sat & Sun",        sub:"Use before midnight Sunday", emoji:"🎉", bg:"linear-gradient(135deg,#2ECC71,#27AE60)", tc:"#fff" },
             ].map(o => (
               <div key={o.code} className="offer-card" style={{ background:o.bg, borderRadius:24, padding:"28px 30px", cursor:"pointer", position:"relative", overflow:"hidden", boxShadow:"0 6px 24px rgba(0,0,0,.10)" }}>
                 <div style={{position:"absolute",right:-50,top:-50,width:180,height:180,borderRadius:"50%",background:"rgba(255,255,255,.25)",pointerEvents:"none"}}/>
@@ -699,8 +700,8 @@ export default function Home() {
           <div className="footer-grid" style={{ display:"grid", gridTemplateColumns:"1.6fr 1fr 1fr 1fr", gap:36, marginBottom:48 }}>
             <div>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-                <div style={{ width:36, height:36, background:C.orange, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>🍔</div>
-                <span style={{ fontSize:22, fontWeight:900, color:C.orange }}>MyApp</span>
+                <img src={snapbiteLogo} alt="SnapBite" style={{ width: 40, height: 40, objectFit: "contain", borderRadius: 8 }} />
+                <span style={{ fontSize:22, fontWeight:900, color:C.orange }}>SnapBite</span>
               </div>
               <p style={{ color:"#475569", fontSize:14, lineHeight:1.8, maxWidth:240, fontFamily:"'Nunito',sans-serif" }}>Delivering happiness to your doorstep. 🧡</p>
               <div style={{ display:"flex", gap:10, marginTop:20 }}>
@@ -728,7 +729,7 @@ export default function Home() {
             ))}
           </div>
           <div style={{ borderTop:"1px solid #1E293B", paddingTop:24, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
-            <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>© 2026 MyApp. All rights reserved.</p>
+            <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>© 2026 SnapBite. All rights reserved.</p>
             <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>Made with 🧡 for food lovers</p>
           </div>
         </footer>

@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Send, ChevronRight, MessageCircle, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import api from "../../services/api";
+import snapbiteLogo from "../../assets/snapbite-logo.png";
 
 /* ─── Styles ─── */
 const ContactStyles = () => (
-  <style>{`
+  <style dangerouslySetInnerHTML={{
+    __html: `
     @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800;900&display=swap');
 
     :root {
@@ -168,7 +170,8 @@ const ContactStyles = () => (
       .ct-hero-left h1 { font-size: 2.4rem !important; }
       .ct-name-row    { grid-template-columns: 1fr !important; }
     }
-  `}</style>
+  `
+  }} />
 );
 
 /* ── Scroll reveal ── */
@@ -185,9 +188,9 @@ function useReveal() {
 }
 
 const quickInfo = [
-  { icon:"📧", title:"Email Us",       val:"support@myapp.com",  sub:"Reply within 2 hours",    color:"#FF7A00", bg:"#FFF3E8", border:"#FFD4A8" },
-  { icon:"📞", title:"Call Us",        val:"+91 98765 43210",    sub:"Mon–Sat · 9 AM – 9 PM",   color:"#2ECC71", bg:"#E8FAF0", border:"#A8E6C2" },
-  { icon:"📍", title:"Visit Us",       val:"Bangalore, India",   sub:"Head Office",              color:"#FFC300", bg:"#FFF8E1", border:"#FFE57A" },
+  { icon:"📧", title:"Email Us",       val:"support@snapbite.com",  sub:"Reply within 2 hours",  color:"#FF7A00", bg:"#FFF3E8", border:"#FFD4A8" },
+  { icon:"📞", title:"Call Us",        val:"+91 98765 43210",    sub:"Mon–Sat · 9 AM – 9 PM",  color:"#2ECC71", bg:"#E8FAF0", border:"#A8E6C2" },
+  { icon:"📍", title:"Visit Us",       val:"Bangalore, India",   sub:"Head Office",             color:"#FFC300", bg:"#FFF8E1", border:"#FFE57A" },
   { icon:"💬", title:"Live Chat",      val:"Available on app",   sub:"Avg. wait < 3 mins",       color:"#9B59B6", bg:"#F5EEFF", border:"#D8B4FE" },
 ];
 
@@ -222,8 +225,6 @@ export default function ContactUs() {
         setError("Something went wrong. Please try again.");
       }
     } catch (err) {
-      // Still show success if the server returned 2xx but axios threw (unlikely),
-      // otherwise show a friendly error
       if (err?.response?.status >= 200 && err?.response?.status < 300) {
         setSuccess("Message submitted! We'll get back to you within 2 hours. 🎉");
         setFormData({ name:"", email:"", phone:"", subject:"", message:"" });
@@ -235,7 +236,7 @@ export default function ContactUs() {
   };
 
   return (
-    <>
+    <div className="contact-page-wrapper">
       <ContactStyles />
       <div style={{ fontFamily:"'Sora', sans-serif", background:"var(--cream)", width:"100%", overflowX:"hidden", color:"var(--text)" }}>
 
@@ -393,7 +394,7 @@ export default function ContactUs() {
                 {/* Contact items */}
                 <div style={{ display:"flex", flexDirection:"column", gap:20 }}>
                   {[
-                    { Icon:Mail,    val:"support@myapp.com",  label:"Email us anytime"       },
+                    { Icon:Mail,    val:"support@snapbite.com",  label:"Email us anytime"       },
                     { Icon:Phone,   val:"+91 98765 43210",    label:"Mon–Sat · 9AM – 9PM"    },
                     { Icon:MapPin,  val:"Bangalore, India",   label:"Head Office"             },
                     { Icon:Clock,   val:"~2 Hour Reply",      label:"Average response time"   },
@@ -517,14 +518,16 @@ export default function ContactUs() {
                 {/* Submit */}
                 <button type="submit" disabled={loading} className="ct-submit">
                   {loading ? (
-                    <>
+                    <span style={{ display:"flex", alignItems:"center", gap:"8px" }}>
                       <svg style={{ animation:"spin-slow 1s linear infinite" }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" opacity="0.4"/>
                       </svg>
                       Sending…
-                    </>
+                    </span>
                   ) : (
-                    <><Send size={16}/> Send Message</>
+                    <span style={{ display:"flex", alignItems:"center", gap:"8px" }}>
+                      <Send size={16}/> Send Message
+                    </span>
                   )}
                 </button>
 
@@ -592,7 +595,7 @@ export default function ContactUs() {
         ══════════════════════════════════════════ */}
         <div style={{ width:"100%", background:"var(--navy)", overflow:"hidden", padding:"12px 0", userSelect:"none" }}>
           <div style={{ display:"flex", animation:"marquee 22s linear infinite", width:"max-content" }}>
-            {Array.from({length:4}).flatMap(()=>["📧 support@myapp.com","📞 +91 98765 43210","📍 Bangalore · Mumbai · Delhi","⚡ Reply in ~2 Hours","😊 98.7% Satisfaction Rate","💬 Live Chat on App"]).map((t,i)=>(
+            {Array.from({length:4}).flatMap(()=>["📧 support@snapbite.com","📞 +91 98765 43210","📍 Bangalore · Mumbai · Delhi","⚡ Reply in ~2 Hours","😊 98.7% Satisfaction Rate","💬 Live Chat on App"]).map((t,i)=>(
               <span key={i} style={{ color:"rgba(255,255,255,0.75)", fontSize:12, fontWeight:700, paddingRight:48, whiteSpace:"nowrap", display:"inline-flex", alignItems:"center", fontFamily:"'Nunito',sans-serif" }}>
                 {t}<span style={{marginLeft:48,color:"var(--orange)"}}>◆</span>
               </span>
@@ -602,14 +605,14 @@ export default function ContactUs() {
 
 
         {/* ══════════════════════════════════════════
-            FOOTER — identical to Home & About
+            FOOTER
         ══════════════════════════════════════════ */}
         <footer style={{ width:"100%", background:"var(--navy)", padding:"60px 5vw 28px" }}>
           <div className="ct-footer-grid" style={{ display:"grid", gridTemplateColumns:"1.6fr 1fr 1fr 1fr", gap:36, marginBottom:48 }}>
             <div>
               <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:14 }}>
-                <div style={{ width:36, height:36, background:"var(--orange)", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>🍔</div>
-                <span style={{ fontSize:22, fontWeight:900, color:"var(--orange)", fontFamily:"'Sora',sans-serif" }}>MyApp</span>
+                <img src={snapbiteLogo} alt="SnapBite" style={{ width: 40, height: 40, objectFit: "contain", borderRadius: 8 }} />
+                <span style={{ fontSize:22, fontWeight:900, color:"var(--orange)", fontFamily:"'Sora',sans-serif" }}>SnapBite</span>
               </div>
               <p style={{ color:"#475569", fontSize:14, lineHeight:1.8, maxWidth:240, fontFamily:"'Nunito',sans-serif" }}>
                 Delivering happiness to your doorstep, one fresh meal at a time. 🧡
@@ -647,12 +650,12 @@ export default function ContactUs() {
           </div>
 
           <div style={{ borderTop:"1px solid #1E293B", paddingTop:24, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
-            <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>© 2026 MyApp. All rights reserved.</p>
+            <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>© 2026 SnapBite. All rights reserved.</p>
             <p style={{ color:"#2D3748", fontSize:13, margin:0, fontFamily:"'Nunito',sans-serif" }}>Made with 🧡 for food lovers</p>
           </div>
         </footer>
 
       </div>
-    </>
+    </div>
   );
 }

@@ -6,7 +6,6 @@ const nodemailer = require('nodemailer');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Gmail transporter
-// Setup: https://myaccount.google.com/apppasswords
 // ─────────────────────────────────────────────────────────────────────────────
 const mailer = nodemailer.createTransport({
   service: 'gmail',
@@ -26,13 +25,13 @@ const generateOtp = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Professional HTML OTP Email
+// Professional HTML OTP Email — SnapBite branding
 // ─────────────────────────────────────────────────────────────────────────────
 const sendOtpEmail = async (toEmail, otp) => {
   await mailer.sendMail({
-    from:    `"MyApp 🍔" <${process.env.EMAIL_USER}>`,
+    from:    `"SnapBite" <${process.env.EMAIL_USER}>`,
     to:      toEmail,
-    subject: 'Your Password Reset OTP - MyApp',
+    subject: 'Your Password Reset OTP — SnapBite',
     html: `
 <!DOCTYPE html>
 <html>
@@ -48,31 +47,32 @@ const sendOtpEmail = async (toEmail, otp) => {
           style="background:#ffffff;border-radius:20px;overflow:hidden;
                  border:1.5px solid #F0ECE6;box-shadow:0 4px 24px rgba(0,0,0,0.07);">
 
-          <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#FF7A00,#FF9A3C);
                        padding:32px 40px;text-align:center;">
-              <div style="font-size:40px;margin-bottom:6px;">🍔</div>
-              <h1 style="margin:0;color:#ffffff;font-size:24px;
-                         font-weight:800;letter-spacing:-0.5px;">MyApp</h1>
+              
+              <div style="margin-bottom:12px;">
+                <img src="https://your-live-website.com/snapbite-logo.png" alt="SnapBite Logo" style="width: 56px; height: 56px; object-fit: contain; border-radius: 12px; background: #ffffff; padding: 4px; display: inline-block;" />
+              </div>
+
+              <h1 style="margin:0;color:#ffffff;font-size:26px;
+                         font-weight:800;letter-spacing:-0.5px;">SnapBite</h1>
               <p style="margin:6px 0 0;color:rgba(255,255,255,0.82);font-size:13px;">
-                Password Reset Request
+                Hot food, your door — Password Reset Request
               </p>
             </td>
           </tr>
 
-          <!-- Body -->
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 6px;color:#5C5C6E;font-size:14px;">Hello,</p>
               <p style="margin:0 0 28px;color:#5C5C6E;font-size:14px;line-height:1.7;">
                 We received a request to reset your
-                <strong style="color:#2C2C2C;">MyApp</strong> account password.
-                Enter the OTP below in the app to continue.
+                <strong style="color:#2C2C2C;">SnapBite</strong> account password.
+                Enter the OTP below to continue.
                 It expires in <strong style="color:#FF7A00;">10 minutes</strong>.
               </p>
 
-              <!-- OTP Box -->
               <div style="background:#FFF3E8;border:2px dashed #FF7A00;
                           border-radius:16px;padding:30px;text-align:center;
                           margin-bottom:28px;">
@@ -90,13 +90,12 @@ const sendOtpEmail = async (toEmail, otp) => {
                 </p>
               </div>
 
-              <!-- Security Warning -->
               <div style="background:#FEF2F2;border-left:4px solid #EF4444;
                           border-radius:0 8px 8px 0;padding:14px 16px;
                           margin-bottom:28px;">
                 <p style="margin:0;color:#DC2626;font-size:13px;line-height:1.6;">
                   🔐 <strong>Security Notice:</strong> Never share this OTP with anyone.
-                  MyApp will <u>never</u> ask for your OTP via call or message.
+                  SnapBite will <u>never</u> ask for your OTP via call or message.
                   If you didn't request this, you can safely ignore this email.
                 </p>
               </div>
@@ -108,21 +107,19 @@ const sendOtpEmail = async (toEmail, otp) => {
             </td>
           </tr>
 
-          <!-- Divider -->
           <tr>
             <td style="padding:0 40px;">
               <div style="height:1px;background:#F0ECE6;"></div>
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background:#F8F6F3;padding:22px 40px;text-align:center;">
               <p style="margin:0 0 4px;color:#9CA3AF;font-size:12px;font-weight:600;">
-                MyApp — Hot food, your door 🍔
+                SnapBite — Hot food, your door
               </p>
               <p style="margin:0;color:#C4BAB1;font-size:11px;line-height:1.6;">
-                © 2025 MyApp. All rights reserved.<br/>
+                © 2026 SnapBite. All rights reserved.<br/>
                 You received this because a password reset was requested for your account.
               </p>
             </td>
@@ -170,12 +167,14 @@ const registerUser = async (req, res) => {
 
     if (user) {
       res.status(201).json({
-        _id:   user.id,
-        name:  user.name,
-        email: user.email,
-        phone: user.phone,
-        role:  user.role,
-        token: generateToken(user.id, user.role),
+        _id:    user.id,
+        name:   user.name,
+        email:  user.email,
+        phone:  user.phone,
+        role:   user.role,
+        avatar: user.avatar,
+        address: user.address,
+        token:  generateToken(user.id, user.role),
       });
     } else {
       res.status(400).json({ message: 'Invalid user data' });
@@ -204,12 +203,14 @@ const loginUser = async (req, res) => {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       res.json({
-        _id:   user.id,
-        name:  user.name,
-        email: user.email,
-        phone: user.phone,
-        role:  user.role,
-        token: generateToken(user.id, user.role),
+        _id:    user.id,
+        name:   user.name,
+        email:  user.email,
+        phone:  user.phone,
+        role:   user.role,
+        avatar: user.avatar,
+        address: user.address,
+        token:  generateToken(user.id, user.role),
       });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
@@ -242,9 +243,149 @@ const getMe = async (req, res) => {
 };
 
 // ═════════════════════════════════════════════════════════════════════════════
-// STEP 1 — Send OTP to Email only
+// UPDATE PROFILE — name, phone, address
+// @route PUT /api/auth/update-profile
+// @access Private (requires JWT)
+// ═════════════════════════════════════════════════════════════════════════════
+const updateProfile = async (req, res) => {
+  try {
+    const { name, phone, address } = req.body;
+
+    if (!name || !name.trim())
+      return res.status(400).json({ message: 'Name is required' });
+
+    const user = await User.findById(req.user.id);
+    if (!user)
+      return res.status(404).json({ message: 'User not found' });
+
+    // Check phone uniqueness if changing
+    if (phone && phone.trim() !== user.phone) {
+      const phoneExists = await User.findOne({
+        phone: phone.trim(),
+        _id:   { $ne: req.user.id },
+      });
+      if (phoneExists)
+        return res.status(400).json({ message: 'Phone number is already registered to another account' });
+    }
+
+    user.name  = name.trim();
+    user.phone = phone ? phone.trim() : user.phone;
+
+    // Update address fields if provided
+    if (address && typeof address === 'object') {
+      user.address = {
+        street:     address.street     || user.address?.street     || "",
+        city:       address.city       || user.address?.city       || "",
+        state:      address.state      || user.address?.state      || "",
+        postalCode: address.postalCode || user.address?.postalCode || "",
+        country:    address.country    || user.address?.country    || "India",
+      };
+    }
+
+    await user.save();
+
+    res.status(200).json({
+      _id:     user.id,
+      name:    user.name,
+      email:   user.email,
+      phone:   user.phone,
+      role:    user.role,
+      avatar:  user.avatar,
+      address: user.address,
+      message: 'Profile updated successfully',
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ═════════════════════════════════════════════════════════════════════════════
+// UPDATE AVATAR — base64 image string
+// @route PUT /api/auth/update-avatar
+// @access Private (requires JWT)
+// ═════════════════════════════════════════════════════════════════════════════
+const updateAvatar = async (req, res) => {
+  try {
+    const { avatar } = req.body;
+
+    if (!avatar)
+      return res.status(400).json({ message: 'Avatar image is required' });
+
+    // Validate it's a base64 image (starts with data:image/)
+    if (!avatar.startsWith('data:image/'))
+      return res.status(400).json({ message: 'Invalid image format. Must be a base64 image.' });
+
+    // Rough size check: base64 string → ~75% of original, limit to ~2MB
+    const sizeInBytes = Buffer.byteLength(avatar, 'utf8');
+    if (sizeInBytes > 2.8 * 1024 * 1024)
+      return res.status(400).json({ message: 'Image is too large. Max 2MB allowed.' });
+
+    const user = await User.findById(req.user.id);
+    if (!user)
+      return res.status(404).json({ message: 'User not found' });
+
+    user.avatar = avatar;
+    await user.save();
+
+    res.status(200).json({
+      _id:    user.id,
+      name:   user.name,
+      email:  user.email,
+      phone:  user.phone,
+      role:   user.role,
+      avatar: user.avatar,
+      message: 'Profile photo updated successfully',
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ═════════════════════════════════════════════════════════════════════════════
+// CHANGE PASSWORD (logged-in user, knows current password)
+// @route PUT /api/auth/change-password
+// @access Private (requires JWT)
+// ═════════════════════════════════════════════════════════════════════════════
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword)
+      return res.status(400).json({ message: 'Current password and new password are required' });
+
+    if (newPassword.length < 6)
+      return res.status(400).json({ message: 'New password must be at least 6 characters' });
+
+    if (currentPassword === newPassword)
+      return res.status(400).json({ message: 'New password must be different from current password' });
+
+    // Must fetch password field explicitly (it's excluded by default in getMe)
+    const user = await User.findById(req.user.id).select('+password');
+    if (!user)
+      return res.status(404).json({ message: 'User not found' });
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch)
+      return res.status(401).json({ message: 'Current password is incorrect' });
+
+    // Hash and save new password
+    const salt    = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    res.status(200).json({ message: 'Password changed successfully' });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// ═════════════════════════════════════════════════════════════════════════════
+// FORGOT PASSWORD — Step 1: Send OTP
 // @route POST /api/auth/forgot-password
-// @body  { method: "email", identifier: "email@example.com" }
 // ═════════════════════════════════════════════════════════════════════════════
 const forgotPassword = async (req, res) => {
   try {
@@ -253,49 +394,40 @@ const forgotPassword = async (req, res) => {
     if (!identifier)
       return res.status(400).json({ message: 'Email address is required' });
 
-    // Only email is supported now
     if (method && method !== 'email')
       return res.status(400).json({ message: 'Only email reset is supported' });
 
     const user = await User.findOne({ email: identifier.toLowerCase().trim() });
 
-    // Same message whether user exists or not — prevents user enumeration
     const genericMsg = 'If that email is registered, an OTP has been sent.';
-
     if (!user) return res.status(200).json({ message: genericMsg });
 
-    // Generate OTP → hash → save
     const otp       = generateOtp();
     const salt      = await bcrypt.genSalt(10);
     const hashedOtp = await bcrypt.hash(otp, salt);
 
     user.resetOtp        = hashedOtp;
-    user.resetOtpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+    user.resetOtpExpires = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    // Send professional HTML email
     await sendOtpEmail(user.email, otp);
 
     res.status(200).json({ message: genericMsg });
 
   } catch (error) {
     console.error('forgotPassword error:', error.message);
-
-    // Friendly error if Gmail App Password not configured
     if (error.code === 'EAUTH' || error.responseCode === 535) {
       return res.status(500).json({
         message: 'Email service error. Check EMAIL_USER and EMAIL_PASS in your .env file.'
       });
     }
-
     res.status(500).json({ message: error.message });
   }
 };
 
 // ═════════════════════════════════════════════════════════════════════════════
-// STEP 2 — Verify OTP → return resetToken
+// VERIFY OTP — Step 2
 // @route POST /api/auth/verify-otp
-// @body  { method: "email", identifier, otp }
 // ═════════════════════════════════════════════════════════════════════════════
 const verifyOtp = async (req, res) => {
   try {
@@ -320,7 +452,6 @@ const verifyOtp = async (req, res) => {
     if (!otpMatch)
       return res.status(400).json({ message: 'Invalid OTP. Please try again.' });
 
-    // OTP correct — issue 15-min reset token
     const plainResetToken  = crypto.randomBytes(32).toString('hex');
     const hashedResetToken = crypto.createHash('sha256').update(plainResetToken).digest('hex');
 
@@ -338,9 +469,8 @@ const verifyOtp = async (req, res) => {
 };
 
 // ═════════════════════════════════════════════════════════════════════════════
-// STEP 3 — Reset Password
+// RESET PASSWORD — Step 3
 // @route POST /api/auth/reset-password
-// @body  { resetToken, newPassword }
 // ═════════════════════════════════════════════════════════════════════════════
 const resetPassword = async (req, res) => {
   try {
@@ -364,7 +494,6 @@ const resetPassword = async (req, res) => {
 
     const salt    = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
-
     user.resetToken        = null;
     user.resetTokenExpires = null;
     await user.save();
@@ -381,6 +510,9 @@ module.exports = {
   loginUser,
   logoutUser,
   getMe,
+  updateProfile,
+  updateAvatar,
+  changePassword,
   forgotPassword,
   verifyOtp,
   resetPassword,

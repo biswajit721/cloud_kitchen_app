@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { X, Plus, Link as LinkIcon } from "lucide-react";
 import api from "../../services/api";
+import snapbiteLogo from "../../assets/snapbite-logo.png";
 
 const S = () => (
-  <style>{`
+  <style dangerouslySetInnerHTML={{
+    __html: `
     @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800;900&family=Nunito:wght@400;500;600;700;800;900&display=swap');
     *,*::before,*::after{box-sizing:border-box}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -49,7 +51,7 @@ const S = () => (
     }
     .cf-toggle-row.active-green  {border-color:#2ECC71;background:#E8FAF0;}
     .cf-toggle-row.active-pureveg{border-color:#16A34A;background:#F0FDF4;}
-  `}</style>
+  `}} />
 );
 
 const CATEGORIES = ["Veg", "Non-Veg", "Dessert", "Drinks", "Snacks", "Beverages"];
@@ -135,8 +137,8 @@ export default function CreateFoodModal({ closeModal, foodData }) {
               <X size={14} color="#fff"/>
             </button>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:40, height:40, background:"rgba(255,255,255,0.22)", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20 }}>
-                {isEdit ? "✏️" : "🍔"}
+              <div style={{ width:40, height:40, background:"rgba(255,255,255,0.22)", borderRadius:12, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, overflow:"hidden" }}>
+                {isEdit ? "✏️" : <img src={snapbiteLogo} alt="SnapBite" style={{width:"80%", height:"80%", objectFit:"contain"}}/>}
               </div>
               <div>
                 <h2 style={{ fontSize:18, fontWeight:900, color:"#fff", margin:0 }}>{isEdit ? "Edit Food Item" : "Add New Food"}</h2>
@@ -281,7 +283,7 @@ export default function CreateFoodModal({ closeModal, foodData }) {
             }}>
               {loading
                 ? <svg style={{ animation:"spin-s .8s linear infinite" }} width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" opacity=".4"/></svg>
-                : (isEdit ? "✓ Save Changes" : "🍔 Add to Menu")
+                : (isEdit ? "✓ Save Changes" : <><img src={snapbiteLogo} style={{height: 18}} alt=""/> Add to Menu</>)
               }
             </button>
           </form>

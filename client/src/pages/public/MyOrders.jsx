@@ -7,10 +7,11 @@ import {
   ChevronDown, ChevronUp, ArrowRight, Package,
   RefreshCw, Download, FileText,
 } from "lucide-react";
+import snapbiteLogo from "../../assets/snapbite-logo.png";
 
 /* ─── Status config ─── */
 const statusMap = {
-  pending:          { label:"Pending",    color:"#B8860B", bg:"#FFF8E1", border:"#FFE57A", dot:"#FFC300", icon:"⏳" },
+  pending:          { label:"Pending",   color:"#B8860B", bg:"#FFF8E1", border:"#FFE57A", dot:"#FFC300", icon:"⏳" },
   confirmed:        { label:"Confirmed",  color:"#2563EB", bg:"#EFF6FF", border:"#BFDBFE", dot:"#2563EB", icon:"✅" },
   preparing:        { label:"Preparing",  color:"#E06A00", bg:"#FFF3E8", border:"#FFD4A8", dot:"#FF7A00", icon:"👨‍🍳" },
   out_for_delivery: { label:"On the Way", color:"#7C3AED", bg:"#F5EEFF", border:"#D8B4FE", dot:"#9B59B6", icon:"🛵" },
@@ -114,7 +115,7 @@ function generateOrderInvoice(order) {
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<title>${invoiceNo} — MyApp</title>
+<title>${invoiceNo} — SnapBite</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&display=swap');
   *{box-sizing:border-box;margin:0;padding:0}
@@ -134,7 +135,8 @@ function generateOrderInvoice(order) {
   /* header */
   .hdr{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:28px;border-bottom:2px solid #F0ECE6;margin-bottom:28px}
   .brand{display:flex;align-items:center;gap:14px}
-  .brand-icon{width:52px;height:52px;background:#FF7A00;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px}
+  .brand-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .brand-icon img {width:100%;height:100%;object-fit:contain;}
   .brand-name{font-size:28px;font-weight:900;color:#FF7A00}
   .brand-sub{font-size:12px;color:#9CA3AF;margin-top:2px}
   .inv-meta{text-align:right}
@@ -201,12 +203,11 @@ function generateOrderInvoice(order) {
   <div class="watermark">${watermarkText}</div>
   <div class="content">
 
-    <!-- Header -->
     <div class="hdr">
       <div class="brand">
-        <div class="brand-icon">🍔</div>
+        <div class="brand-icon"><img src="${snapbiteLogo}" alt="SnapBite"/></div>
         <div>
-          <div class="brand-name">MyApp</div>
+          <div class="brand-name">SnapBite</div>
           <div class="brand-sub">Fresh Food Delivery Platform</div>
         </div>
       </div>
@@ -217,10 +218,8 @@ function generateOrderInvoice(order) {
       </div>
     </div>
 
-    <!-- Status badge -->
     <div class="badge">${statusBadge}</div>
 
-    <!-- Bill To & Status card -->
     <div class="cards">
       <div class="card">
         <div class="card-lbl">Bill To</div>
@@ -244,7 +243,6 @@ function generateOrderInvoice(order) {
       </div>
     </div>
 
-    <!-- Items table -->
     <div class="tbl-wrap">
       <table>
         <thead>
@@ -259,7 +257,6 @@ function generateOrderInvoice(order) {
       </table>
     </div>
 
-    <!-- Totals -->
     <div class="totals">
       <div class="tot-box">
         <div class="trow"><span>Subtotal</span><span>₹${total.toLocaleString("en-IN")}</span></div>
@@ -272,7 +269,6 @@ function generateOrderInvoice(order) {
       </div>
     </div>
 
-    <!-- Status message box -->
     <div class="status-box">
       <div class="status-box-icon">
         ${orderStatus === "delivered" ? "🎉" : orderStatus === "cancelled" ? "❌" : orderStatus === "out_for_delivery" ? "🛵" : orderStatus === "preparing" ? "👨‍🍳" : "✅"}
@@ -281,7 +277,7 @@ function generateOrderInvoice(order) {
         <h4>${statusBadge}</h4>
         <p>
           ${orderStatus === "delivered"
-            ? "Your order has been successfully delivered. Thank you for ordering with MyApp!"
+            ? "Your order has been successfully delivered. Thank you for ordering with SnapBite!"
             : orderStatus === "cancelled"
             ? "This order was cancelled. If you have questions, please contact support."
             : orderStatus === "out_for_delivery"
@@ -293,9 +289,8 @@ function generateOrderInvoice(order) {
       </div>
     </div>
 
-    <!-- Footer -->
     <div class="foot">
-      <div class="foot-l">MyApp · Fresh Food Delivery · support@myapp.com</div>
+      <div class="foot-l">SnapBite · Fresh Food Delivery · support@snapbite.com</div>
       <div class="foot-r">${invoiceNo} · ${orderDate}</div>
     </div>
 

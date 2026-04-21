@@ -5,12 +5,13 @@ import {
   LayoutDashboard, UtensilsCrossed, ShoppingBag,
   MessageSquare, LogOut, Home, X, Menu, ChevronRight
 } from "lucide-react";
+import snapbiteLogo from "../assets/snapbite-logo.png";
 
 const navLinks = [
   { to:"/admin",         label:"Dashboard",  Icon:LayoutDashboard, exact:true  },
-  { to:"/admin/food",   label:"Foods",       Icon:UtensilsCrossed               },
-  { to:"/admin/orders",  label:"Orders",      Icon:ShoppingBag                   },
-  { to:"/admin/contact", label:"Messages",    Icon:MessageSquare                 },
+  { to:"/admin/food",    label:"Foods",      Icon:UtensilsCrossed               },
+  { to:"/admin/orders",  label:"Orders",     Icon:ShoppingBag                   },
+  { to:"/admin/contact", label:"Messages",   Icon:MessageSquare                 },
 ];
 
 export default function Sidebar() {
@@ -36,21 +37,24 @@ export default function Sidebar() {
       position:"relative", overflow:"hidden",
       flexShrink: 0,
     }}>
-      {/* Decorative orb */}
       <div style={{ position:"absolute", top:-60, right:-60, width:200, height:200, borderRadius:"50%", background:"rgba(255,122,0,0.08)", pointerEvents:"none" }}/>
       <div style={{ position:"absolute", bottom:-40, left:-40, width:140, height:140, borderRadius:"50%", background:"rgba(46,204,113,0.07)", pointerEvents:"none" }}/>
 
       {/* Logo */}
       <div style={{ padding:"24px 20px 20px", borderBottom:"1px solid rgba(255,255,255,0.07)", position:"relative", zIndex:1 }}>
         <Link to="/" style={{ display:"flex", alignItems:"center", gap:10, textDecoration:"none", marginBottom:20 }}>
-          <div style={{ width:36, height:36, background:"linear-gradient(135deg,#FF7A00,#FF9A3C)", borderRadius:11, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, boxShadow:"0 4px 12px rgba(255,122,0,0.30)", flexShrink:0 }}>🍔</div>
+          <img src={snapbiteLogo} alt="SnapBite" style={{ height:36, width:"auto", objectFit:"contain" }}/>
           <div>
-            <div style={{ fontSize:16, fontWeight:900, color:"#fff", letterSpacing:"-0.01em" }}>MyApp</div>
+            <div style={{
+              fontSize:16, fontWeight:900, letterSpacing:"-0.01em",
+              background:"linear-gradient(135deg,#FF7A00,#2ECC71)",
+              backgroundClip:"text", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
+            }}>SnapBite</div>
             <div style={{ fontSize:10, color:"rgba(255,255,255,0.40)", fontWeight:600, letterSpacing:"0.08em", textTransform:"uppercase" }}>Admin Panel</div>
           </div>
         </Link>
 
-        {/* Admin user chip */}
+        {/* Admin chip */}
         <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.10)", borderRadius:12, padding:"10px 12px" }}>
           <div style={{ width:32, height:32, background:"linear-gradient(135deg,#FF7A00,#FF9A3C)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:900, color:"#fff", flexShrink:0 }}>
             {initials}
@@ -62,7 +66,7 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Nav links */}
+      {/* Nav */}
       <nav style={{ flex:1, padding:"16px 12px", display:"flex", flexDirection:"column", gap:4, position:"relative", zIndex:1 }}>
         <div style={{ fontSize:9, fontWeight:800, color:"rgba(255,255,255,0.28)", letterSpacing:"0.12em", textTransform:"uppercase", padding:"0 8px", marginBottom:6 }}>
           Navigation
@@ -77,8 +81,7 @@ export default function Sidebar() {
               background: active ? "rgba(255,122,0,0.18)" : "transparent",
               border: `1px solid ${active ? "rgba(255,122,0,0.30)" : "transparent"}`,
               color: active ? "#FF7A00" : "rgba(255,255,255,0.60)",
-              fontWeight: active ? 700 : 500,
-              fontSize:13,
+              fontWeight: active ? 700 : 500, fontSize:13,
               transition:"all 0.15s ease",
             }}
               onMouseEnter={e=>{ if(!active){ e.currentTarget.style.background="rgba(255,255,255,0.06)"; e.currentTarget.style.color="rgba(255,255,255,0.90)"; } }}
@@ -138,12 +141,10 @@ export default function Sidebar() {
         }
       `}</style>
 
-      {/* Desktop */}
       <div className="sb-desktop" style={{ flexShrink:0 }}>
         <SidebarContent/>
       </div>
 
-      {/* Mobile hamburger */}
       <button type="button" className="sb-hamburger" onClick={() => setMobileOpen(true)} style={{
         position:"fixed", top:16, left:16, zIndex:800,
         width:40, height:40, background:"#1A1A2E", border:"none",
@@ -153,7 +154,6 @@ export default function Sidebar() {
         <Menu size={18} color="#fff"/>
       </button>
 
-      {/* Mobile drawer */}
       {mobileOpen && (
         <>
           <div onClick={() => setMobileOpen(false)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.55)", zIndex:900, animation:"fadeIn .2s ease", backdropFilter:"blur(4px)" }}/>
